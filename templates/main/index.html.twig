@@ -19,10 +19,14 @@
     <table>
         <tr>
             <th>Name</th>
-            <td>{{ myShip.name }}</td>
+            <td>
+                <a href="{{ path('app_starship_index', {
+                    id: myShip.id
+                }) }}">{{ myShip.name }}</a>
+            </td>
         </tr>
         <tr>
-            <th>Class</th>
+            <th>Class</th>ssss
             <td>{{ myShip.class }}</td>
         </tr>
         <tr>
