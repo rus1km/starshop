@@ -6,8 +6,8 @@
 <h1>Starshop: your monopoly-busting option for Starship parts!</h1>
 
 <div>
-    Browse through {{ numberOfStarships * 10 }} starships!
-    {% if numberOfStarships > 400 %}
+    Browse through {{ starships|length * 10 }} starships!
+    {% if starships|length > 2 %}
         <p>
             {# Do you think "shiploads" will pass the legal team? #}
             That's a shiploads of ships!
