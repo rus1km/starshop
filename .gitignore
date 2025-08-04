@@ -9,6 +9,8 @@
 /vendor/
 .env.local
 .env
+.env.dev
+.env.prod
 ###< symfony/framework-bundle ###
 
 ###> symfony/phpunit-bridge ###
