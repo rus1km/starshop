@@ -13,9 +13,8 @@ class MainController extends AbstractController
   public function index(
     StarshipRepository $repository,
   ): Response {
-    $starships = $repository->findAll();
-
-    $myShip = $starships[array_rand($starships)];
+    $starships = $repository->findIncomplete();
+    $myShip = $repository->findMyShip();
 
     return $this->render('main/index.html.twig', [
       'myShip' => $myShip,
