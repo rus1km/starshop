@@ -2,22 +2,19 @@
 
 namespace App\Controller;
 
-use App\Repository\StarshipRepository;
+use App\Entity\Starship;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 
 class StarshipController extends AbstractController
 {
-  #[Route('/starships/{id<\d+>}', methods: ['GET'], name: 'app_starship_index')]
-  public function index(StarshipRepository $repository, int $id): Response
-  {
-    $starship = $repository->find($id);
-
-    if (!$starship) {
-      throw $this->createNotFoundException('Starship not found');
-    }
-
+  #[Route('/starships/{slug}', methods: ['GET'], name: 'app_starship_index')]
+  public function index(
+    #[MapEntity(mapping: ['slug' => 'slug'])]
+    Starship $starship,
+  ): Response {
     return $this->render('starship/index.html.twig', [
       'starship' => $starship,
     ]);
