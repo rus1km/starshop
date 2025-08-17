@@ -8,9 +8,16 @@
 		{{ include('main/_shipStatusAside.html.twig') }}
 
 		<div class="px-12 pt-10 w-full">
-			<h1 class="text-4xl font-semibold mb-8">
+			<h1 class="text-4xl font-semibold mb-3">
 				Ship Repair Queue
 			</h1>
+			<div class="text-slate-400 mb-4">
+				{{ starships.nbResults }}
+				ships (Page
+				{{ starships.currentPage }}
+				of
+				{{ starships.nbPages }})
+			</div>
 
 			<div class="space-y-5">
 				{% for ship in starships %}
@@ -45,6 +52,16 @@
 					</div>
 				{% endfor %}
 			</div>
+			{% if starships.haveToPaginate %}
+				<div class="flex justify-around mt-3 underline font-semibold">
+					{% if starships.hasPreviousPage %}
+						<a href="{{ path('app_main', {page: starships.getPreviousPage}) }}">&lt; Previous</a>
+					{% endif %}
+					{% if starships.hasNextPage %}
+						<a href="{{ path('app_main', {page: starships.getNextPage}) }}">Next &gt;</a>
+					{% endif %}
+				</div>
+			{% endif %}
 
 			<p class="text-lg mt-5 text-center md:text-left">
 				Looking for your next galactic ride?
