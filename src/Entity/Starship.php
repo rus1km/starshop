@@ -107,52 +107,60 @@ class Starship
     }
 
     public function getStatusString(): string
-  {
-    return $this->status->value;
-  }
+    {
+        return $this->status->value;
+    }
 
-  public function getStatusImageFilename(): string
-  {
-    return match ($this->status) {
-      StarshipStatusEnum::IN_PROGRESS => 'images/status-in-progress.png',
-      StarshipStatusEnum::COMPLETED => 'images/status-complete.png',
-      StarshipStatusEnum::WAITING => 'images/status-waiting.png',
-    };
-  }
+    public function getStatusImageFilename(): string
+    {
+        return match ($this->status) {
+            StarshipStatusEnum::IN_PROGRESS => 'images/status-in-progress.png',
+            StarshipStatusEnum::COMPLETED => 'images/status-complete.png',
+            StarshipStatusEnum::WAITING => 'images/status-waiting.png',
+        };
+    }
 
-  public function getSlug(): ?string
-  {
-      return $this->slug;
-  }
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
 
-  public function setSlug(?string $slug): static
-  {
-      $this->slug = $slug;
+    public function setSlug(?string $slug): static
+    {
+        $this->slug = $slug;
 
-      return $this;
-  }
+        return $this;
+    }
 
-  public function getUpdatedAt(): ?\DateTimeImmutable
-  {
-      return $this->updatedAt;
-  }
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
 
-  public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
-  {
-      $this->updatedAt = $updatedAt;
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
 
-      return $this;
-  }
+        return $this;
+    }
 
-  public function getCreatedAt(): ?\DateTimeImmutable
-  {
-      return $this->createdAt;
-  }
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
 
-  public function setCreatedAt(?\DateTimeImmutable $createdAt): static
-  {
-      $this->createdAt = $createdAt;
+    public function setCreatedAt(?\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
 
-      return $this;
-  }
+        return $this;
+    }
+
+    public function checkIn(?\DateTimeImmutable $arrivedAt = null): static
+    {
+        $this->setArrivedAt($arrivedAt ?? new \DateTimeImmutable('now'));
+        $this->setStatus(StarshipStatusEnum::WAITING);
+
+        return $this;
+    }
 }
