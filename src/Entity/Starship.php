@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\StarshipRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -40,6 +42,17 @@ class Starship
     #[ORM\Column()]
     #[Gedmo\Timestampable(on: 'create')]
     private ?\DateTimeImmutable $createdAt = null;
+
+    /**
+     * @var Collection<int, StarshipPart>
+     */
+    #[ORM\OneToMany(targetEntity: StarshipPart::class, mappedBy: 'starship')]
+    private Collection $parts;
+
+    public function __construct()
+    {
+        $this->parts = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -160,6 +173,36 @@ class Starship
     {
         $this->setArrivedAt($arrivedAt ?? new \DateTimeImmutable('now'));
         $this->setStatus(StarshipStatusEnum::WAITING);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, StarshipPart>
+     */
+    public function getParts(): Collection
+    {
+        return $this->parts;
+    }
+
+    public function addPart(StarshipPart $part): static
+    {
+        if (!$this->parts->contains($part)) {
+            $this->parts->add($part);
+            $part->setStarship($this);
+        }
+
+        return $this;
+    }
+
+    public function removePart(StarshipPart $part): static
+    {
+        if ($this->parts->removeElement($part)) {
+            // set the owning side to null (unless already changed)
+            if ($part->getStarship() === $this) {
+                $part->setStarship(null);
+            }
+        }
 
         return $this;
     }
