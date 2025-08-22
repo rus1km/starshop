@@ -3,6 +3,7 @@
 namespace App\Factory;
 
 use App\Entity\StarshipPart;
+use App\Entity\StarshipStatusEnum;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
@@ -13,11 +14,11 @@ final class StarshipPartFactory extends PersistentProxyObjectFactory
     private static array $partIdeas = [
         'warp core' => 'looks cool AND zoom',
         'shield generator' => 'in case you run into any Borg',
-        'captain\'s chair' => 'just slightly more comfortable than the others',
+        "captain's chair" => 'just slightly more comfortable than the others',
         'fuzzy dice' => 'obviously',
-        'photon torpedoes' => 'for when the fuzzy dice don\'t work',
+        'photon torpedoes' => "for when the fuzzy dice don't work",
         'holodeck' => 'parental controls? No way!',
-        'Tactical Whoopee Cushion Array' => 'can\'t beat them? Embarrass them!',
+        'Tactical Whoopee Cushion Array' => "can't beat them? Embarrass them!",
         'Temporal Seat Warmers' => 'warm your seat before you sit down',
         'Food Replicator' => 'Earl Grey, hot',
         'Self-Destruct Button Cover' => 'for when you have a cat',
@@ -29,9 +30,7 @@ final class StarshipPartFactory extends PersistentProxyObjectFactory
      *
      * @todo inject services if required
      */
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     public static function class(): string
     {
@@ -51,6 +50,9 @@ final class StarshipPartFactory extends PersistentProxyObjectFactory
             'name' => $randomPart[0],
             'notes' => $randomPart[1],
             'price' => self::faker()->randomNumber(5),
+            'starship' => StarshipFactory::randomOrCreate([
+                'status' => StarshipStatusEnum::IN_PROGRESS,
+            ]),
         ];
     }
 
@@ -59,8 +61,7 @@ final class StarshipPartFactory extends PersistentProxyObjectFactory
      */
     protected function initialize(): static
     {
-        return $this
-            // ->afterInstantiate(function(StarshipPart $starshipPart): void {})
-        ;
+        return $this;
+        // ->afterInstantiate(function(StarshipPart $starshipPart): void {})
     }
 }
