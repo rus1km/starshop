@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Starship;
+use App\Repository\StarshipPartRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -14,9 +15,12 @@ class StarshipController extends AbstractController
   public function index(
     #[MapEntity(mapping: ['slug' => 'slug'])]
     Starship $starship,
+    StarshipPartRepository $partRepository,
   ): Response {
+    $expensiveParts = $partRepository->getExpensiveParts(10);
     return $this->render('starship/index.html.twig', [
       'starship' => $starship,
+      'expensiveParts' => $expensiveParts,
     ]);
   }
 }

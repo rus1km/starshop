@@ -39,10 +39,10 @@
 					<p class="text-[22px] font-semibold">{{ starship.arrivedAt|ago }}</p>
 
 					<h4 class="text-xs text-slate-300 font-semibold mt-2 uppercase">
-						Parts ({{ starship.parts|length }})
+						Expensive Parts ({{ expensiveParts|length }})
 					</h4>
 					<ul class="text-sm font-medium text-slate-400 tracking-wide">
-						{% for part in starship.parts %}
+						{% for part in expensiveParts %}
 							<li class="border-b border-slate-600 py-2">
 								<span class="block text-white font-semibold">
 									{{ part.name }}
