@@ -38,6 +38,19 @@
 					<h4 class="text-xs text-slate-300 font-semibold mt-2 uppercase">Arrived At</h4>
 					<p class="text-[22px] font-semibold">{{ starship.arrivedAt|ago }}</p>
 
+					<h4 class="text-xs text-slate-300 font-semibold mt-2 uppercase">Droids</h4>
+					<p class="text-[22px] font-semibold">
+						{% for starshipDroid in starship.starshipDroids %}
+							{{ starshipDroid.droid.name }}
+							(assigned at
+							{{ starshipDroid.assignedAt|ago }})
+							{% if not loop.last %},
+							{% endif %}
+						{% else %}
+							No droids on board (clean up your own mess)
+						{% endfor %}
+					</p>
+
 					<h4 class="text-xs text-slate-300 font-semibold mt-2 uppercase">
 						Expensive Parts ({{ expensiveParts|length }})
 					</h4>

@@ -22,14 +22,14 @@ class Droid
     private ?string $primaryFunction = null;
 
     /**
-     * @var Collection<int, Starship>
+     * @var Collection<int, StarshipDroid>
      */
-    #[ORM\ManyToMany(targetEntity: Starship::class, mappedBy: 'droids')]
-    private Collection $starships;
+    #[ORM\OneToMany(targetEntity: StarshipDroid::class, mappedBy: 'droid')]
+    private Collection $starshipDroids;
 
     public function __construct()
     {
-        $this->starships = new ArrayCollection();
+        $this->starshipDroids = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -66,14 +66,16 @@ class Droid
      */
     public function getStarships(): Collection
     {
-        return $this->starships;
+        return $this->starshipDroids->map(fn(StarshipDroid $starshipDroid) => $starshipDroid->getStarship());
     }
 
     public function addStarship(Starship $starship): static
     {
-        if (!$this->starships->contains($starship)) {
-            $this->starships->add($starship);
-            $starship->addDroid($this);
+        if (!$this->getStarships()->contains($starship)) {
+            $starshipDroid = new StarshipDroid();
+            $starshipDroid->setStarship($starship);
+            $starshipDroid->setDroid($this);
+            $this->starshipDroids->add($starshipDroid);
         }
 
         return $this;
@@ -81,8 +83,38 @@ class Droid
 
     public function removeStarship(Starship $starship): static
     {
-        if ($this->starships->removeElement($starship)) {
+        if ($this->getStarships()->removeElement($starship)) {
             $starship->removeDroid($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, StarshipDroid>
+     */
+    public function getStarshipDroids(): Collection
+    {
+        return $this->starshipDroids;
+    }
+
+    public function addStarshipDroid(StarshipDroid $starshipDroid): static
+    {
+        if (!$this->starshipDroids->contains($starshipDroid)) {
+            $this->starshipDroids->add($starshipDroid);
+            $starshipDroid->setDroid($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStarshipDroid(StarshipDroid $starshipDroid): static
+    {
+        if ($this->starshipDroids->removeElement($starshipDroid)) {
+            // set the owning side to null (unless already changed)
+            if ($starshipDroid->getDroid() === $this) {
+                $starshipDroid->setDroid(null);
+            }
         }
 
         return $this;

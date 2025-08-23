@@ -5,7 +5,7 @@ namespace App\Repository;
 use App\Entity\Starship;
 use App\Entity\StarshipStatusEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;   
+use Doctrine\Persistence\ManagerRegistry;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Pagerfanta\Pagerfanta;
 
@@ -27,12 +27,14 @@ class StarshipRepository extends ServiceEntityRepository
     /**
      * @return Pagerfanta<Starship>
      */
-    public function findIncomplete(): Pagerfanta
+    public function findIncompleteOrderedByDroidCount(): Pagerfanta
     {
         $query = $this
             ->createQueryBuilder('e')
             ->where('e.status != :status')
-            ->orderBy('e.arrivedAt', 'DESC')
+            ->orderBy('COUNT(starshipDroid)', 'ASC')
+            ->leftJoin('e.starshipDroids', 'starshipDroid')
+            ->groupBy('e.id')
             ->setParameter('status', StarshipStatusEnum::COMPLETED)
             ->getQuery();
 

@@ -53,15 +53,15 @@ class Starship
     private Collection $parts;
 
     /**
-     * @var Collection<int, Droid>
+     * @var Collection<int, StarshipDroid>
      */
-    #[ORM\ManyToMany(targetEntity: Droid::class, inversedBy: 'starships')]
-    private Collection $droids;
+    #[ORM\OneToMany(targetEntity: StarshipDroid::class, mappedBy: 'starship', cascade: ['persist'])]
+    private Collection $starshipDroids;
 
     public function __construct()
     {
         $this->parts = new ArrayCollection();
-        $this->droids = new ArrayCollection();
+        $this->starshipDroids = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -230,13 +230,19 @@ class Starship
      */
     public function getDroids(): Collection
     {
-        return $this->droids;
+        return $this->starshipDroids->map(fn(StarshipDroid $starshipDroid) => $starshipDroid->getDroid()); 
     }
 
-    public function addDroid(Droid $droid): static
+    public function addDroid(Droid $droid, \DateTimeImmutable $assignedAt = null): static
     {
-        if (!$this->droids->contains($droid)) {
-            $this->droids->add($droid);
+        if (!$this->getDroids()->contains($droid)) {
+            $starshipDroid = new StarshipDroid();
+            $starshipDroid->setDroid($droid);
+            $starshipDroid->setStarship($this);
+            if ($assignedAt) {
+                $starshipDroid->setAssignedAt($assignedAt);
+            }
+            $this->starshipDroids->add($starshipDroid);
         }
 
         return $this;
@@ -244,7 +250,42 @@ class Starship
 
     public function removeDroid(Droid $droid): static
     {
-        $this->droids->removeElement($droid);
+        $this->getDroids()->removeElement($droid);
+
+        return $this;
+    }
+
+    public function getDroidsNames(): string
+    {
+        return implode(', ', $this->getDroids()->map(fn(Droid $droid) => $droid->getName())->toArray());
+    }
+
+    /**
+     * @return Collection<int, StarshipDroid>
+     */
+    public function getStarshipDroids(): Collection
+    {
+        return $this->starshipDroids;
+    }
+
+    public function addStarshipDroid(StarshipDroid $starshipDroid): static
+    {
+        if (!$this->starshipDroids->contains($starshipDroid)) {
+            $this->starshipDroids->add($starshipDroid);
+            $starshipDroid->setStarship($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStarshipDroid(StarshipDroid $starshipDroid): static
+    {
+        if ($this->starshipDroids->removeElement($starshipDroid)) {
+            // set the owning side to null (unless already changed)
+            if ($starshipDroid->getStarship() === $this) {
+                $starshipDroid->setStarship(null);
+            }
+        }
 
         return $this;
     }

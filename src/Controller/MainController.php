@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Repository\StarshipRepository;
 use App\Repository\StarshipPartRepository;
+use App\Repository\StarshipRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +17,7 @@ class MainController extends AbstractController
     Request $request,
     StarshipPartRepository $partRepository,
   ): Response {
-    $starships = $repository->findIncomplete();
+    $starships = $repository->findIncompleteOrderedByDroidCount();
     $starships->setMaxPerPage(5);
     $starships->setCurrentPage($request->query->get('page', 1));
     $myShip = $repository->findMyShip();
